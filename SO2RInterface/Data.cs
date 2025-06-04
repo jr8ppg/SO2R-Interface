@@ -16,6 +16,7 @@ namespace SO2RInterface
         private bool _minimize;
         private bool _noStereo;
         private bool _latch;
+        private bool _afblend;
         private bool _manual;
 
         /// <summary>
@@ -79,6 +80,21 @@ namespace SO2RInterface
                 Properties.Settings.Default.Latch = _latch;
                 Properties.Settings.Default.Save();
                 Latch_Changed?.Invoke();
+            }
+        }
+
+        public bool AfBlend
+        {
+            get
+            {
+                return _afblend;
+            }
+            set
+            {
+                _afblend = value;
+                Properties.Settings.Default.AfBlend = _afblend;
+                Properties.Settings.Default.Save();
+                AfBlend_Changed?.Invoke();
             }
         }
 
@@ -175,14 +191,17 @@ namespace SO2RInterface
         string _devicename; // Device name (SO2R Mini, Midi, Maxi etc)
         int _aux1;         // Aux 1 (Radio 1 antenna)
         int _aux2;         // Aux 2 (Radio 2 antenna)
+        int _blendratio;    // AF Blend ratio (0-100)
 
         public Action Rx_Changed;
         public Action Tx_Changed;
         public Action Ptt_Changed;
         public Action Latch_Changed;
+        public Action AfBlend_Changed;
         public Action Devicename_Changed;
         public Action Aux1_Changed;
         public Action Aux2_Changed;
+        public Action BlendRatio_Changed;
         public Action<byte> KeyerRxChar;
         public Action<byte> KeyerTxChar;
 
@@ -265,6 +284,21 @@ namespace SO2RInterface
             {
                 _aux2 = value & 0xf;
                 Aux2_Changed?.Invoke();
+            }
+        }
+
+        public int BlendRatio
+        {
+            get
+            {
+                return _blendratio;
+            }
+            set
+            {
+                _blendratio = value;
+                Properties.Settings.Default.BlendRatio = _blendratio;
+                Properties.Settings.Default.Save();
+                BlendRatio_Changed?.Invoke();
             }
         }
 

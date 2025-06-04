@@ -2,6 +2,7 @@
 // See the file LICENSE for license information and restrictions.
 
 using JH.CommBase;
+using System;
 using System.Diagnostics;
 
 namespace SO2RInterface
@@ -19,9 +20,12 @@ namespace SO2RInterface
             PTTON = 0x83,
             LATCHOFF = 0x84,
             LATCHON = 0x85,
+            AFBLENDOFF = 0x86,
+            AFBLENDON = 0x87,
             TXRX = 0x90,
             AUX1 = 0xA0,
-            AUX2 = 0xB0
+            AUX2 = 0xB0,
+            BLENDRATIO = 0xC0
         }
 
         /// <summary>
@@ -119,9 +123,11 @@ namespace SO2RInterface
 
         private bool _txrxPending = false;
         private bool _latchPending = false;
+        private bool _afblendPending = false;
         private bool _pttPending = false;
         private bool _aux1Pending = false;
         private bool _aux2Pending = false;
+        private bool _blendRatioPending = false;
 
         private readonly object LockObject = new object();
 
@@ -153,8 +159,10 @@ namespace SO2RInterface
             _data.KeyerRxChar += KeyerRx;
             _data.Ptt_Changed += Ptt_Changed;
             _data.Latch_Changed += Latch_Changed;
+            _data.AfBlend_Changed += AfBlend_Changed;
             _data.Aux1_Changed += Aux1_Changed;
             _data.Aux2_Changed += Aux2_Changed;
+            _data.BlendRatio_Changed += BlendRatio_Changed;
             return true;
         }
 
@@ -396,6 +404,15 @@ namespace SO2RInterface
         }
 
         /// <summary>
+        /// Send the SO2R Neo AF Blend message
+        /// </summary>
+        private void SendAfBlend()
+        {
+            Send((byte)((_data.AfBlend) ? Messages.AFBLENDON : Messages.AFBLENDOFF));
+            _afblendPending = false;
+        }
+
+        /// <summary>
         /// Send the SO2R PTT message
         /// </summary>
         private void SendPtt()
@@ -420,6 +437,17 @@ namespace SO2RInterface
         {
             Send((byte)((byte)Messages.AUX2 | _data.Aux2));
             _aux2Pending = false;
+        }
+
+        /// <summary>
+        /// Send the SO2R Neo BlendRatio message
+        /// </summary>
+        private void SendBlendRatio()
+        {
+            byte bRatio = (byte)((int)(255.0F * ((float)_data.BlendRatio / 100.0F)) & 0xff);
+            Send((byte)((byte)Messages.BLENDRATIO | (byte)((bRatio >> 4) & 0x0f)));
+            Send((byte)((byte)Messages.BLENDRATIO | (byte)(bRatio & 0x0f)));
+            _blendRatioPending = false;
         }
 
         /// <summary>
@@ -454,6 +482,24 @@ namespace SO2RInterface
                 else
                 {
                     SendLatch();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Called when the AF Blend mode changes
+        /// </summary>
+        public void AfBlend_Changed()
+        {
+            lock (LockObject)
+            {
+                if ((_wkIgnore != 0) || _wkAdmin)
+                {
+                    _afblendPending = true;
+                }
+                else
+                {
+                    SendAfBlend();
                 }
             }
         }
@@ -513,6 +559,24 @@ namespace SO2RInterface
         }
 
         /// <summary>
+        /// Called when BlendRatio changes
+        /// </summary>
+        public void BlendRatio_Changed()
+        {
+            lock (LockObject)
+            {
+                if ((_wkIgnore != 0) || _wkAdmin)
+                {
+                    _blendRatioPending = true;
+                }
+                else
+                {
+                    SendBlendRatio();
+                }
+            }
+        }
+
+        /// <summary>
         /// Called when a multi-byte Winkey command is completed
         /// </summary>
         private void UpdatePending()
@@ -545,6 +609,18 @@ namespace SO2RInterface
             {
                 Debug.WriteLine("AUX2 was Pending");
                 SendAux2();
+            }
+
+            if (_afblendPending)
+            {
+                Debug.WriteLine("AFBlend was Pending");
+                SendAfBlend();
+            }
+
+            if (_blendRatioPending)
+            {
+                Debug.WriteLine("AF BlendRatio was Pending");
+                SendBlendRatio();
             }
         }
 

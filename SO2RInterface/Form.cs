@@ -56,6 +56,7 @@ namespace SO2RInterface
             rStereo.Enabled = false;
             gTX.Enabled = false;
             gRX.Enabled = false;
+            SetAfBlendEnable(false);
 
             int _index = cSo2rDevice.FindStringExact(_data.DevicePort);
             cSo2rDevice.SelectedIndex = Math.Max(_index, 0);
@@ -105,6 +106,8 @@ namespace SO2RInterface
         private void CNoStereo_CheckedChanged(object sender, EventArgs e)
         {
             _data.NoStereo = cNoStereo.Checked;
+            _data.AfBlend = !cNoStereo.Checked;
+            SetAfBlendEnable(!cNoStereo.Checked);
         }
 
         private void CLatch_CheckedChanged(object sender, EventArgs e)
@@ -149,16 +152,23 @@ namespace SO2RInterface
             if (rRX1.Checked)
             {
                 _data.Rx = Data.RX.RX1;
+                _data.AfBlend = false;
+                SetAfBlendEnable(false);
             }
             else
             {
                 if (rRX2.Checked)
                 {
                     _data.Rx = Data.RX.RX2;
+                    _data.AfBlend = false;
+                    SetAfBlendEnable(false);
                 }
                 else
                 {
+                    // stereo
                     _data.Rx = Data.RX.RX1S;
+                    _data.AfBlend = true;
+                    SetAfBlendEnable(true);
                 }
             }
         }
@@ -226,12 +236,15 @@ namespace SO2RInterface
                 rStereo.Enabled = true;
                 gTX.Enabled = true;
                 gRX.Enabled = true;
+
+                SetAfBlendEnable(rStereo.Checked);
             }
             else
             {
                 cOtrsp.Enabled = false;
                 _data.Tx_Changed += UpdateTx;
                 _data.Rx_Changed += UpdateRx;
+                SetAfBlendEnable(false);
             }
         }
 
@@ -278,6 +291,7 @@ namespace SO2RInterface
             rStereo.Enabled = false;
             gTX.Enabled = false;
             gRX.Enabled = false;
+            SetAfBlendEnable(false);
 
             Text = "SO2R Interface";
         }
@@ -377,6 +391,25 @@ namespace SO2RInterface
             {
                 Text = _data.Devicename;
             });
+        }
+
+        private void bBlendRatio_Click(object sender, EventArgs e)
+        {
+            tbAfBlend.Value = int.Parse((string)((Button)sender).Tag);
+        }
+
+        private void tbAfBlend_ValueChanged(object sender, EventArgs e)
+        {
+            _data.BlendRatio = tbAfBlend.Value;
+        }
+
+        private void SetAfBlendEnable(bool fEnable)
+        {
+            fEnable = fEnable & !cNoStereo.Checked;
+            tbAfBlend.Enabled = fEnable;
+            bBlendRatio0.Enabled = fEnable;
+            bBlendRatio50.Enabled = fEnable;
+            bBlendRatio100.Enabled = fEnable;
         }
     }
 
