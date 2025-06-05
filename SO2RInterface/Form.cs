@@ -236,16 +236,14 @@ namespace SO2RInterface
                 rStereo.Enabled = true;
                 gTX.Enabled = true;
                 gRX.Enabled = true;
-
-                SetAfBlendEnable(rStereo.Checked);
             }
             else
             {
                 cOtrsp.Enabled = false;
                 _data.Tx_Changed += UpdateTx;
                 _data.Rx_Changed += UpdateRx;
-                SetAfBlendEnable(false);
             }
+            SetAfBlendEnable(rStereo.Checked);
         }
 
         /// <summary>
