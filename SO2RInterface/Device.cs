@@ -159,9 +159,9 @@ namespace SO2RInterface
             _data.KeyerRxChar += KeyerRx;
             _data.Ptt_Changed += Ptt_Changed;
             _data.Latch_Changed += Latch_Changed;
-            _data.AfBlend_Changed += AfBlend_Changed;
             _data.Aux1_Changed += Aux1_Changed;
             _data.Aux2_Changed += Aux2_Changed;
+            _data.AfBlend_Changed += AfBlend_Changed;
             _data.BlendRatio_Changed += BlendRatio_Changed;
             return true;
         }
@@ -179,6 +179,8 @@ namespace SO2RInterface
             _data.Latch_Changed -= Latch_Changed;
             _data.Aux1_Changed -= Aux1_Changed;
             _data.Aux2_Changed -= Aux2_Changed;
+            _data.AfBlend_Changed -= AfBlend_Changed;
+            _data.BlendRatio_Changed -= BlendRatio_Changed;
         }
 
         protected override void OnRxChar(byte ch)
