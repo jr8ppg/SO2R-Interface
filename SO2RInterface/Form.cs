@@ -69,6 +69,7 @@ namespace SO2RInterface
 
             _data.Latch_Changed += Latch_Changed;
             _data.Devicename_Changed += Devicename_Changed;
+            _data.Deviceversion_Changed += Devicename_Changed;
 
             if (_data.Minimize)
             {
@@ -387,7 +388,7 @@ namespace SO2RInterface
         {
             Invoke((MethodInvoker) delegate
             {
-                Text = _data.Devicename;
+                Text = _data.Devicename + " " + _data.DeviceVersion;
             });
         }
 

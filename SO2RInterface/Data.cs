@@ -189,6 +189,7 @@ namespace SO2RInterface
         TX _tx;             // Current transmitter
         bool _ptt;          // OTRSP PTT
         string _devicename; // Device name (SO2R Mini, Midi, Maxi etc)
+        string _deviceversion; // Device version
         int _aux1;         // Aux 1 (Radio 1 antenna)
         int _aux2;         // Aux 2 (Radio 2 antenna)
         int _blendratio;    // AF Blend ratio (0-100)
@@ -199,6 +200,7 @@ namespace SO2RInterface
         public Action Latch_Changed;
         public Action AfBlend_Changed;
         public Action Devicename_Changed;
+        public Action Deviceversion_Changed;
         public Action Aux1_Changed;
         public Action Aux2_Changed;
         public Action BlendRatio_Changed;
@@ -258,6 +260,19 @@ namespace SO2RInterface
             {
                 _devicename = value;
                 Devicename_Changed?.Invoke();
+            }
+        }
+
+        public string DeviceVersion
+        {
+            get
+            {
+                return _deviceversion;
+            }
+            set
+            {
+                _deviceversion = value;
+                Deviceversion_Changed?.Invoke();
             }
         }
 
@@ -332,6 +347,9 @@ namespace SO2RInterface
             _tx = (TX)Properties.Settings.Default.TxRadio;
 
             _ptt = false;
+
+            _devicename = "";
+            _deviceversion = "";
         }
 
         /// <summary>

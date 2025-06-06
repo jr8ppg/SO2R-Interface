@@ -366,7 +366,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form";
-            this.Text = "SO2R Interface for SO2R Neo";
+            this.Text = "SO2R Interface";
             this.gTX.ResumeLayout(false);
             this.gTX.PerformLayout();
             this.groupBox1.ResumeLayout(false);
