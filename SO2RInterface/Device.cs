@@ -197,84 +197,91 @@ namespace SO2RInterface
                     break;
 
                 case State.INFO_REQUESTED:
-                    switch(_deviceByte)
-                    {
-                        case 0:     // First header byte
-                            _deviceByte = (ch == 0xAA) ? 1 : 0;
-                            break;
+                    Send((byte)Messages.OPEN);
+                    SendTxRx();
+                    SendLatch();
+                    SendPtt();
+                    SendAux1();
+                    SendAux2();
+                    _state = State.OPEN;
+                    //switch(_deviceByte)
+                    //{
+                    //    case 0:     // First header byte
+                    //        _deviceByte = (ch == 0xAA) ? 1 : 0;
+                    //        break;
 
-                        case 1:     // Second header byte
-                            _deviceByte = (ch == 0x55) ? 2 : 0;
-                            break;
+                    //    case 1:     // Second header byte
+                    //        _deviceByte = (ch == 0x55) ? 2 : 0;
+                    //        break;
 
-                        case 2:     // Third header byte
-                            _deviceByte = (ch == 0xCC) ? 3 : 0;
-                            break;
+                    //    case 2:     // Third header byte
+                    //        _deviceByte = (ch == 0xCC) ? 3 : 0;
+                    //        break;
 
-                        case 3:     // Fourth header byte
-                            _deviceByte = (ch == 0x33) ? 4 : 0;
-                            break;
+                    //    case 3:     // Fourth header byte
+                    //        _deviceByte = (ch == 0x33) ? 4 : 0;
+                    //        break;
 
-                        case 4:     // SO2R device major version
-                            _deviceVersion[0] = ch;
-                            _deviceByte = 5;
-                            break;
+                    //    case 4:     // SO2R device major version
+                    //        _deviceVersion[0] = ch;
+                    //        _deviceByte = 5;
+                    //        break;
 
-                        case 5:     // SO2R device minor version
-                            _deviceVersion[1] = ch;
-                            _deviceByte = 6;
-                            break;
+                    //    case 5:     // SO2R device minor version
+                    //        _deviceVersion[1] = ch;
+                    //        _deviceByte = 6;
+                    //        break;
 
-                        case 6:     // SO2R device patch version
-                            _deviceVersion[2] = ch;
-                            _deviceByte = 7;
-                            break;
+                    //    case 6:     // SO2R device patch version
+                    //        _deviceVersion[2] = ch;
+                    //        _deviceByte = 7;
+                    //        break;
 
-                        case 7:     // SO2R protocol major version
-                            _protocolVersion[0] = ch;
-                            _deviceByte = 8;
-                            break;
+                    //    case 7:     // SO2R protocol major version
+                    //        _protocolVersion[0] = ch;
+                    //        _deviceByte = 8;
+                    //        break;
 
-                        case 8:     // SO2R protocol minor version
-                            _protocolVersion[1] = ch;
-                            _deviceByte = 9;
-                            break;
+                    //    case 8:     // SO2R protocol minor version
+                    //        _protocolVersion[1] = ch;
+                    //        _deviceByte = 9;
+                    //        break;
 
-                        case 9:     // Device capabilities
-                            _data.Capabilities = ch;
-                            _deviceByte = 10;
-                            break;
+                    //    case 9:     // Device capabilities
+                    //        _data.Capabilities = ch;
+                    //        _deviceByte = 10;
+                    //        break;
 
-                        case 10:    // Device name
-                            if (ch == 0)
-                            {
-                                _data.Devicename = _deviceName;
-                                _deviceByte = 11;
-                            }
-                            else
-                            {
-                                _deviceName += (char)ch;
-                            }
-                            break;
+                    //    case 10:    // Device name
+                    //        if (ch == 0)
+                    //        {
+                    //            _data.Devicename = _deviceName;
+                    //            _deviceByte = 11;
+                    //        }
+                    //        else
+                    //        {
+                    //            _deviceName += (char)ch;
+                    //        }
+                    //        break;
 
-                        case 11:    // Device version string
-                            if (ch == 0)
-                            {
-                                Send((byte)Messages.OPEN);
-                                SendTxRx();
-                                SendLatch();
-                                SendPtt();
-                                SendAux1();
-                                SendAux2();
-                                _state = State.OPEN;
-                                _deviceByte = 0;
-                            }
-                            else
-                            {
-                                _deviceVerString += (char)ch;
-                            }
-                            break;
-                    }
+                    //    case 11:    // Device version string
+                    //        if (ch == 0)
+                    //        {
+                    //            Send((byte)Messages.OPEN);
+                    //            SendTxRx();
+                    //            SendLatch();
+                    //            SendPtt();
+                    //            SendAux1();
+                    //            SendAux2();
+                    //            _state = State.OPEN;
+                    //            _deviceByte = 0;
+                    //        }
+                    //        else
+                    //        {
+                    //            _deviceVerString += (char)ch;
+                    //        }
+                    //        break;
+                    //}
                     break;
             }
         }
