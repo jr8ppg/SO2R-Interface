@@ -183,6 +183,14 @@ namespace SO2RInterface
             _data.BlendRatio_Changed -= BlendRatio_Changed;
         }
 
+        /// <summary>
+        /// Processing received characters
+        /// </summary>
+        /// <param name="ch"></param>
+        /// <remarks>
+        /// SO2R Mini: 0xAA, 0x55, 0xCC, 0x33, v1, v2, v3, p1, p2, c1, SO2R Mini 0x00 2019.12.17.01 0x00
+        /// SO2R Neo:  0xAA, S, 0xAA, O, 0xAA, 2, 0xAA, R, 0xAA,  , 0xAA, N, 0xAA, e, 0xAA, o, 0xAA, 0x00, 0xAB, J, 0xAB, a, 0xAB, n, 0xAB,  , 0xAB, 2, 0xAB,  , 0xAB, 2, 0xAB, 0, 0xAB, 2, 0xAB, 2, 0xAB, 0x00
+        /// </remarks>
         protected override void OnRxChar(byte ch)
         {
             switch (_state)
@@ -197,81 +205,78 @@ namespace SO2RInterface
                     break;
 
                 case State.INFO_REQUESTED:
-                    //Send((byte)Messages.OPEN);
-                    //SendTxRx();
-                    //SendLatch();
-                    //SendPtt();
-                    //SendAux1();
-                    //SendAux2();
-                    //_state = State.OPEN;
                     switch (_deviceByte) {
                         case 0:     // First header byte
-                            if (ch == 0xAA) {
-                                _deviceByte = 10;
-                            } else if (ch == 0xAB) {
-                                _deviceByte = 11;
-                            } else {
-                                _deviceByte = 0;
-                            }
-
-                             //   _deviceByte = (ch == 0xAA) ? 10 : 0;
+                            _deviceByte = (ch == 0xAA) ? 1 : 0;
                             break;
 
-                        //case 1:     // Second header byte
-                        //    _deviceByte = (ch == 0x55) ? 2 : 0;
-                        //    break;
+                        case 1:     // Second header byte
+                            // 0x55 is SO2R Mini
+                            // Otherwise, SO2R Neo
+                            if (ch == 0x55)
+                            {
+                                _deviceByte = 2;
+                            }
+                            else
+                            {
+                                _deviceName += (char)ch;
+                                _deviceByte = 12;
+                            }
+                            break;
 
-                        //case 2:     // Third header byte
-                        //    _deviceByte = (ch == 0xCC) ? 3 : 0;
-                        //    break;
+                        case 2:     // Third header byte
+                            _deviceByte = (ch == 0xCC) ? 3 : 0;
+                            break;
 
-                        //case 3:     // Fourth header byte
-                        //    _deviceByte = (ch == 0x33) ? 4 : 0;
-                        //    break;
+                        case 3:     // Fourth header byte
+                            _deviceByte = (ch == 0x33) ? 4 : 0;
+                            break;
 
-                        //case 4:     // SO2R device major version
-                        //    _deviceVersion[0] = ch;
-                        //    _deviceByte = 5;
-                        //    break;
+                        case 4:     // SO2R device major version
+                            _deviceVersion[0] = ch;
+                            _deviceByte = 5;
+                            break;
 
-                        //case 5:     // SO2R device minor version
-                        //    _deviceVersion[1] = ch;
-                        //    _deviceByte = 6;
-                        //    break;
+                        case 5:     // SO2R device minor version
+                            _deviceVersion[1] = ch;
+                            _deviceByte = 6;
+                            break;
 
-                        //case 6:     // SO2R device patch version
-                        //    _deviceVersion[2] = ch;
-                        //    _deviceByte = 7;
-                        //    break;
+                        case 6:     // SO2R device patch version
+                            _deviceVersion[2] = ch;
+                            _deviceByte = 7;
+                            break;
 
-                        //case 7:     // SO2R protocol major version
-                        //    _protocolVersion[0] = ch;
-                        //    _deviceByte = 8;
-                        //    break;
+                        case 7:     // SO2R protocol major version
+                            _protocolVersion[0] = ch;
+                            _deviceByte = 8;
+                            break;
 
-                        //case 8:     // SO2R protocol minor version
-                        //    _protocolVersion[1] = ch;
-                        //    _deviceByte = 9;
-                        //    break;
+                        case 8:     // SO2R protocol minor version
+                            _protocolVersion[1] = ch;
+                            _deviceByte = 9;
+                            break;
 
-                        //case 9:     // Device capabilities
-                        //    _data.Capabilities = ch;
-                        //    _deviceByte = 10;
-                        //    break;
+                        case 9:     // Device capabilities
+                            _data.Capabilities = ch;
+                            _deviceByte = 10;
+                            break;
 
                         case 10:    // Device name
-                            if (ch == 0) {
+                            if (ch == 0)
+                            {
                                 _data.Devicename = _deviceName;
-                                //_deviceByte = 11;
-                                _deviceByte = 0;
-                            } else {
+                                _deviceByte = 11;
+                            }
+                            else
+                            {
                                 _deviceName += (char)ch;
-                                _deviceByte = 0;
                             }
                             break;
 
                         case 11:    // Device version string
-                            if (ch == 0) {
+                            if (ch == 0)
+                            {
                                 _data.DeviceVersion = _deviceVerString;
                                 Send((byte)Messages.OPEN);
                                 SendTxRx();
@@ -281,9 +286,58 @@ namespace SO2RInterface
                                 SendAux2();
                                 _state = State.OPEN;
                                 _deviceByte = 0;
-                            } else {
+                            }
+                            else
+                            {
                                 _deviceVerString += (char)ch;
+                            }
+                            break;
+
+                        case 12:    // SO2R Neo: Determining the Device name and Device version string
+                            if (ch == 0xAA)
+                            {
+                                _deviceByte = 13;
+                            }
+                            else if (ch == 0xAB)
+                            {
+                                _deviceByte = 14;
+                            }
+                            else
+                            {
+                                _deviceByte = 12;
+                            }
+                            break;
+
+                        case 13:    // SO2R Neo: Device name
+                            if (ch == 0)
+                            {
+                                _data.Devicename = _deviceName;
+                                _deviceByte = 12;
+                            }
+                            else
+                            {
+                                _deviceName += (char)ch;
+                                _deviceByte = 12;
+                            }
+                            break;
+
+                        case 14:    // SO2R Neo: Device version string
+                            if (ch == 0)
+                            {
+                                _data.DeviceVersion = _deviceVerString;
+                                Send((byte)Messages.OPEN);
+                                SendTxRx();
+                                SendLatch();
+                                SendPtt();
+                                SendAux1();
+                                SendAux2();
+                                _state = State.OPEN;
                                 _deviceByte = 0;
+                            }
+                            else
+                            {
+                                _deviceVerString += (char)ch;
+                                _deviceByte = 12;
                             }
                             break;
                     }

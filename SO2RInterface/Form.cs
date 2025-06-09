@@ -57,6 +57,7 @@ namespace SO2RInterface
             gTX.Enabled = false;
             gRX.Enabled = false;
             SetAfBlendEnable(false);
+            SetSO2RMiniMode();
 
             int _index = cSo2rDevice.FindStringExact(_data.DevicePort);
             cSo2rDevice.SelectedIndex = Math.Max(_index, 0);
@@ -389,6 +390,15 @@ namespace SO2RInterface
             Invoke((MethodInvoker) delegate
             {
                 Text = _data.Devicename + " " + _data.DeviceVersion;
+
+                if (_data.Devicename == "SO2R Neo")
+                {
+                    SetSO2RNeoMode();
+                }
+                else
+                {
+                    SetSO2RMiniMode();
+                }
             });
         }
 
@@ -410,6 +420,17 @@ namespace SO2RInterface
             bBlendRatio50.Enabled = fEnable;
             bBlendRatio100.Enabled = fEnable;
         }
-    }
 
+        private void SetSO2RMiniMode()
+        {
+            gAFBlend.Visible = false;
+            this.Height = 268;
+        }
+
+        private void SetSO2RNeoMode()
+        {
+            gAFBlend.Visible = true;
+            this.Height = 362;
+        }
+    }
 }

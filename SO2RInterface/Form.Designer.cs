@@ -48,13 +48,13 @@
             this.gTX = new System.Windows.Forms.GroupBox();
             this.rTX2 = new System.Windows.Forms.RadioButton();
             this.rTX1 = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.gAFBlend = new System.Windows.Forms.GroupBox();
             this.bBlendRatio0 = new System.Windows.Forms.Button();
             this.bBlendRatio50 = new System.Windows.Forms.Button();
             this.bBlendRatio100 = new System.Windows.Forms.Button();
             this.tbAfBlend = new System.Windows.Forms.TrackBar();
             this.gTX.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.gAFBlend.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbAfBlend)).BeginInit();
             this.SuspendLayout();
             // 
@@ -281,18 +281,18 @@
             this.rTX1.UseVisualStyleBackColor = true;
             this.rTX1.CheckedChanged += new System.EventHandler(this.RTx_CheckedChanged);
             // 
-            // groupBox1
+            // gAFBlend
             // 
-            this.groupBox1.Controls.Add(this.bBlendRatio0);
-            this.groupBox1.Controls.Add(this.bBlendRatio50);
-            this.groupBox1.Controls.Add(this.bBlendRatio100);
-            this.groupBox1.Controls.Add(this.tbAfBlend);
-            this.groupBox1.Location = new System.Drawing.Point(29, 231);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(282, 80);
-            this.groupBox1.TabIndex = 20;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "AF Blend";
+            this.gAFBlend.Controls.Add(this.bBlendRatio0);
+            this.gAFBlend.Controls.Add(this.bBlendRatio50);
+            this.gAFBlend.Controls.Add(this.bBlendRatio100);
+            this.gAFBlend.Controls.Add(this.tbAfBlend);
+            this.gAFBlend.Location = new System.Drawing.Point(29, 231);
+            this.gAFBlend.Name = "gAFBlend";
+            this.gAFBlend.Size = new System.Drawing.Size(282, 80);
+            this.gAFBlend.TabIndex = 20;
+            this.gAFBlend.TabStop = false;
+            this.gAFBlend.Text = "AF Blend";
             // 
             // bBlendRatio0
             // 
@@ -344,8 +344,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(346, 323);
-            this.Controls.Add(this.groupBox1);
+            this.ClientSize = new System.Drawing.Size(346, 229);
+            this.Controls.Add(this.gAFBlend);
             this.Controls.Add(this.gTX);
             this.Controls.Add(this.cManual);
             this.Controls.Add(this.cLatch);
@@ -369,8 +369,8 @@
             this.Text = "SO2R Interface";
             this.gTX.ResumeLayout(false);
             this.gTX.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.gAFBlend.ResumeLayout(false);
+            this.gAFBlend.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbAfBlend)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -398,7 +398,7 @@
         private System.Windows.Forms.GroupBox gTX;
         private System.Windows.Forms.RadioButton rTX2;
         private System.Windows.Forms.RadioButton rTX1;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox gAFBlend;
         private System.Windows.Forms.TrackBar tbAfBlend;
         private System.Windows.Forms.Button bBlendRatio0;
         private System.Windows.Forms.Button bBlendRatio50;
