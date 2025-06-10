@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "YCCC SO2R Mini / SO2R Neo"
-#define MyAppVersion "1.1.0.0"
+#define MyAppVersion "1.1.0.1"
 #define MyAppPublisher "Paul Young, K1XM"
 #define MyAppURL "http://www.so2r.org"
 #define MyAppExeName "MyProg.exe"

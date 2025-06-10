@@ -132,6 +132,11 @@ namespace SO2RInterface
         private readonly object LockObject = new object();
 
         /// <summary>
+        /// If true, the connected device is SO2R Neo
+        /// </summary>
+        private bool _so2rneo = false;
+
+        /// <summary>
         /// Pointer to the business logic and data
         /// </summary>
         private readonly Data _data;
@@ -216,11 +221,13 @@ namespace SO2RInterface
                             if (ch == 0x55)
                             {
                                 _deviceByte = 2;
+                                _so2rneo = false;
                             }
                             else
                             {
                                 _deviceName += (char)ch;
                                 _deviceByte = 12;
+                                _so2rneo = true;
                             }
                             break;
 
@@ -476,6 +483,10 @@ namespace SO2RInterface
         /// </summary>
         private void SendAfBlend()
         {
+            if (_so2rneo == false) {
+                return;
+            }
+
             Send((byte)((_data.AfBlend) ? Messages.AFBLENDON : Messages.AFBLENDOFF));
             _afblendPending = false;
         }
@@ -512,6 +523,10 @@ namespace SO2RInterface
         /// </summary>
         private void SendBlendRatio()
         {
+            if (_so2rneo == false) {
+                return;
+            }
+
             byte bRatio = (byte)((int)(255.0F * ((float)_data.BlendRatio / 100.0F)) & 0xff);
             Send((byte)((byte)Messages.BLENDRATIO | (byte)((bRatio >> 4) & 0x0f)));
             Send((byte)((byte)Messages.BLENDRATIO | (byte)(bRatio & 0x0f)));
